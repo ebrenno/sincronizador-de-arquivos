@@ -6,7 +6,6 @@
 package utilitario.arquivo;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -22,9 +21,8 @@ public class Diretorio {
 
         File file = new File(caminho);
         File[] lista = filtrarArquivosEmTransferencia(file);
-        Collection<FileHeader> listaArquivo = convertFrom(lista);
 
-        return listaArquivo;
+        return convertFrom(lista);
     }
 
     /**
@@ -36,19 +34,15 @@ public class Diretorio {
      * @return um vetor com os arquivos filtrados ou um vetor vazio.
      */
     private static File[] filtrarArquivosEmTransferencia(File caminho) {
-        File[] lista = caminho.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                long tamanho = file.length();
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-                return tamanho == file.length();
+        return caminho.listFiles(file -> {
+            long tamanho = file.length();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
+            return tamanho == file.length();
         });
-        return lista;
     }
 
     /**
