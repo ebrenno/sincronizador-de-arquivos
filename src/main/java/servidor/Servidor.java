@@ -5,30 +5,23 @@
  */
 package servidor;
 
-import java.net.Inet4Address;
+import javax.swing.*;
+import java.io.File;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
  * @author brenno
  */
 public class Servidor extends javax.swing.JFrame {
-    private volatile boolean ligada;
-    private int tempo;
     private String diretorio;
     private String serverIp;
     private int portaUpload;
     private int portaDownload;
-    private ThreadServerUpload tsu;
-    private ThreadServerDownload tsd;
-    
+
     /**
      * Creates new form Cliente
      */
@@ -254,7 +247,7 @@ public class Servidor extends javax.swing.JFrame {
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         jfc.setAcceptAllFileFilterUsed(false);
         jfc.showOpenDialog(null);
-        diretorio = jfc.getSelectedFile().toString();
+        diretorio = jfc.getSelectedFile().toString().concat(File.separator);
         jLabelDiretorio.setText( diretorio );
     }//GEN-LAST:event_jButtonDiretorioActionPerformed
 
@@ -277,8 +270,8 @@ public class Servidor extends javax.swing.JFrame {
             jButtonDiretorio.setEnabled(false);
             jButton2.setEnabled(false);
 
-            tsd = new ThreadServerDownload(diretorio , portaDownload , jLabelDownload);
-            tsu = new ThreadServerUpload(diretorio, portaUpload, jLabelUpload);
+            ThreadServerDownload tsd = new ThreadServerDownload(diretorio, serverIp, portaDownload, jLabelDownload);
+            ThreadServerUpload tsu = new ThreadServerUpload(diretorio, serverIp, portaUpload, jLabelUpload);
             Thread t1 = new Thread(tsu);
             Thread t2 = new Thread(tsd);
             t1.start();

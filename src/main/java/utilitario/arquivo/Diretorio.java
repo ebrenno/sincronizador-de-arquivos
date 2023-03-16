@@ -53,7 +53,7 @@ public class Diretorio {
     private static Collection<FileHeader> convertFrom(File[] file) {
         Collection<FileHeader> listaArquivo = new LinkedHashSet<>();
         for (File i : file) {
-            FileHeader j = new FileHeader(i.getName(), i.lastModified());
+            FileHeader j = new FileHeader(i.getName(), i.lastModified(),i.length());
             listaArquivo.add(j);
         }
         return listaArquivo;

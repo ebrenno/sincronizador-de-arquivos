@@ -1,21 +1,21 @@
 package cliente;
 
+import utilitario.arquivo.Diretorio;
+import utilitario.arquivo.FileHeader;
+import utilitario.comunicacao.Requisicao;
+import utilitario.comunicacao.Upload;
+import utilitario.gui.Mensagem;
+import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import utilitario.arquivo.Diretorio;
-import utilitario.arquivo.FileHeader;
-import utilitario.gui.Mensagem;
-import utilitario.comunicacao.Requisicao;
-import utilitario.comunicacao.Upload;
+import java.util.logging.Logger;
 
 public class ThreadClienteUpload implements Runnable {
-
+private static final Logger log = Logger.getLogger(ThreadClienteUpload.class.getName());
     public ThreadClienteUpload(String diretorio, int porta, String serverIp, JLabel label) {
         this.serverIp = serverIp;
         this.porta = porta;
@@ -46,22 +46,36 @@ public class ThreadClienteUpload implements Runnable {
        
         Mensagem.exibir(label,"conectando...");
         socket = new Socket(serverIp, porta);
-
-        Collection<FileHeader> listaFinal = Diretorio.obterArquivos(diretorio);
+        log.info("obtendo relação de arquivos internos.");
+        Collection<FileHeader> relacaoDeArquivos = Diretorio.obterArquivos(diretorio);
 
         oos = new ObjectOutputStream(socket.getOutputStream());
         ois = new ObjectInputStream(socket.getInputStream());
 
         Requisicao requisicao = new Requisicao(ois, oos);
         //envia a lista de arquivos para o server
-        requisicao.enviar(listaFinal);
+        log.info("enviando relação de arquivos para o serviço.");
+        requisicao.enviar(relacaoDeArquivos);
         //recebe a lista necessaria para envio
-        listaFinal = requisicao.receber();
+        log.info("aguardando requisição do serviço para upload de novos arquivos.");
+        relacaoDeArquivos = requisicao.receber();
+
+        if(relacaoDeArquivos.isEmpty()){
+            log.info("não há arquivos candidatos à envio.");
+            return;
+        }
         //escolhe os arquivos que serao enviados
-        listaFinal = escolherArquivos(listaFinal);
+        log.info("aguardando relação de arquivos que o usuário quer subir.");
+        relacaoDeArquivos = escolherArquivos(relacaoDeArquivos);
+        //avisa o serviço se o processo irá continuar.
+        requisicao.enviar(relacaoDeArquivos);
+        if(relacaoDeArquivos.isEmpty()){
+            log.info("não há arquivos para envio.");
+            return;
+        }
         //envia definitivamente os arquivos
-        Upload upload = new Upload(oos,diretorio, label);
-        upload.iniciar(listaFinal);
+        Upload upload = new Upload(oos,diretorio);
+        upload.iniciar(relacaoDeArquivos);
     }
 
     public void fecharRecursos() {

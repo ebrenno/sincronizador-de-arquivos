@@ -5,12 +5,16 @@ import java.util.Objects;
 
 public class FileHeader implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private final String nome;
     private final long dataDeModificacao;
 
-    public FileHeader(String nome, long dataDeModificacao) {
+    private final long tamanho;
+
+    public FileHeader(String nome, long dataDeModificacao,long tamanho) {
         this.nome = nome;
         this.dataDeModificacao = dataDeModificacao;
+        this.tamanho = tamanho;
     }
 
     public String getNome() {
@@ -19,6 +23,10 @@ public class FileHeader implements Serializable {
 
     public long getDataDeModificacao() {
         return dataDeModificacao;
+    }
+
+    public long getTamanho() {
+        return tamanho;
     }
 
     @Override

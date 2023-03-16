@@ -5,6 +5,7 @@
  */
 package cliente;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -22,9 +23,6 @@ public class Cliente extends javax.swing.JFrame {
     private Thread t2;
     private volatile boolean ligada;
     private int tempo;
-    private String serverIp;
-    private int portaUpload;
-    private int portaDownload;
     private String diretorio;
     
     public Cliente(){
@@ -238,19 +236,19 @@ public class Cliente extends javax.swing.JFrame {
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         jfc.setAcceptAllFileFilterUsed(false);
         jfc.showOpenDialog(null);
-        diretorio = jfc.getSelectedFile().toString();
+        diretorio = jfc.getSelectedFile().toString().concat(File.separator);
         jLabelDiretorio.setText( diretorio );
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        serverIp = jTextIp.getText();
-        portaUpload =  2000;
-        portaDownload = 4000;
+        String serverIp = jTextIp.getText();
+        int portaUpload = 2000;
+        int portaDownload = 4000;
         tempo = Integer.parseInt( jTextTempo.getText() );
         jButton1.setEnabled(true);
 
-        tcu = new ThreadClienteUpload(diretorio ,portaUpload,serverIp ,jLabelUpload);
-        tcd = new ThreadClienteDownload(diretorio ,portaDownload,serverIp, jLabelDownload);
+        tcu = new ThreadClienteUpload(diretorio , portaUpload, serverIp,jLabelUpload);
+        tcd = new ThreadClienteDownload(diretorio , portaDownload, serverIp, jLabelDownload);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
