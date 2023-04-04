@@ -18,7 +18,7 @@ public class Diretorio {
      * @return uma lista de arquivos ou uma lista vazia
      */
     public static Collection<FileHeader> obterArquivos(String caminho) {
-
+        
         File file = new File(caminho);
         File[] lista = filtrarArquivosEmTransferencia(file);
 

@@ -6,11 +6,13 @@
 package cliente;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import utilitario.gui.Mensagem;
 
 /**
  *
@@ -27,7 +29,7 @@ public class Cliente extends javax.swing.JFrame {
     
     public Cliente(){
         initComponents();
- 
+        Mensagem.atribuir(jLabelUpload, jLabelDownload);
     }
 
     /**
@@ -59,6 +61,8 @@ public class Cliente extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cliente");
+        setMinimumSize(new java.awt.Dimension(400, 300));
+        setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
@@ -101,7 +105,14 @@ public class Cliente extends javax.swing.JFrame {
 
         jLabel9.setText("tempo:");
 
+        jLabelDiretorio.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabelDiretorio.setText("---");
+        jLabelDiretorio.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jLabelDiretorio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jLabelDiretorioMouseEntered(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -110,7 +121,6 @@ public class Cliente extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
                     .addComponent(jButton3)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -130,10 +140,12 @@ public class Cliente extends javax.swing.JFrame {
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabelTempo))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(jLabelDiretorio)))
+                    .addComponent(jLabel2))
                 .addContainerGap(26, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelDiretorio, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton1, jButton2});
@@ -187,7 +199,7 @@ public class Cliente extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelDownload)
                             .addComponent(jLabelUpload)))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -247,8 +259,13 @@ public class Cliente extends javax.swing.JFrame {
         tempo = Integer.parseInt( jTextTempo.getText() );
         jButton1.setEnabled(true);
 
-        tcu = new ThreadClienteUpload(diretorio , portaUpload, serverIp,jLabelUpload);
-        tcd = new ThreadClienteDownload(diretorio , portaDownload, serverIp, jLabelDownload);
+        try {
+            tcu = new ThreadClienteUpload(diretorio , portaUpload, serverIp);
+            tcd = new ThreadClienteDownload(diretorio , portaDownload, serverIp);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -271,6 +288,11 @@ public class Cliente extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jLabelDiretorioMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelDiretorioMouseEntered
+    
+        jLabelDiretorio.setToolTipText(diretorio);
+    }//GEN-LAST:event_jLabelDiretorioMouseEntered
 
     public void despertar(){
         new Thread(new Runnable() {

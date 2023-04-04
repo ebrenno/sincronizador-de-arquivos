@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,13 +17,12 @@ import java.util.logging.Logger;
 
 public class ThreadClienteUpload implements Runnable {
 private static final Logger log = Logger.getLogger(ThreadClienteUpload.class.getName());
-    public ThreadClienteUpload(String diretorio, int porta, String serverIp, JLabel label) {
+    public ThreadClienteUpload(String diretorio, int porta, String serverIp) throws UnsupportedEncodingException {
         this.serverIp = serverIp;
         this.porta = porta;
         this.diretorio = diretorio;
-        this.label = label;
     }
-    private final JLabel label;
+    
     private final String diretorio;
     private final String serverIp;
     private final int porta;
@@ -30,7 +30,7 @@ private static final Logger log = Logger.getLogger(ThreadClienteUpload.class.get
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-    public Collection<FileHeader> escolherArquivos(Collection<FileHeader> lista) throws IOException {
+    public Collection<FileHeader> escolherArquivos(Collection<FileHeader> lista) {
        
         for(Iterator<FileHeader> i = lista.iterator() ; i.hasNext();){
             FileHeader fh = i.next();
@@ -44,7 +44,7 @@ private static final Logger log = Logger.getLogger(ThreadClienteUpload.class.get
 
     public void main() throws IOException, ClassNotFoundException {
        
-        Mensagem.exibir(label,"conectando...");
+        Mensagem.updateUpload("conectando...");
         socket = new Socket(serverIp, porta);
         log.info("obtendo relação de arquivos internos.");
         Collection<FileHeader> relacaoDeArquivos = Diretorio.obterArquivos(diretorio);
@@ -98,7 +98,7 @@ private static final Logger log = Logger.getLogger(ThreadClienteUpload.class.get
             e.printStackTrace();
         }finally{
             fecharRecursos();
-            Mensagem.exibir(label,"---");
+            Mensagem.updateUpload("---");
         }
         
     }

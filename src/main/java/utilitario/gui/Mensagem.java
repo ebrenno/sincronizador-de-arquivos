@@ -8,19 +8,31 @@ package utilitario.gui;
 import javax.swing.JLabel;
 
 public class Mensagem {
-
-    /**
-     * exibe na interface gráfica da aplicação uma mensagem
-     *
-     * @param label a jlabel que irá mostrar a mensagem
-     * @param mensagem a mensagem que será mostrada
-     */
-    public static void exibir(JLabel label, String mensagem) {
-        label.setText(mensagem);
+    
+    private static JLabel statusUpload;
+    private static JLabel statusDownload;
+    
+    public static void atribuir(JLabel upload, JLabel download){
+        statusUpload = upload;
+        statusDownload = download;
+    }
+    
+    public static void updateUpload(String mensagem){
+        statusUpload.setText(mensagem);
+        Mensagem.esperar();
+    }
+    public static void updateDownload(String mensagem){
+        statusDownload.setText(mensagem);
+        Mensagem.esperar();
+    }
+    
+    private static void esperar() {
+        
         try {
-            Thread.sleep(400);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }
+
 }

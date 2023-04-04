@@ -21,8 +21,6 @@ public class Requisicao {
      * recebe de outra aplicação uma lista de cabeçalhos de arquivos
      *
      * @return uma lista com elementos ou uma lista vazia
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
      */
     public Collection<FileHeader> receber() throws IOException, ClassNotFoundException {
         Collection<FileHeader> listaArquivo = (Collection<FileHeader>) ois.readObject();
@@ -33,7 +31,6 @@ public class Requisicao {
      * envia para outra aplicação uma lista de cabeçalhos de arquivos.
      *
      * @param lista uma lista com elementos ou uma lista vazia
-     * @throws java.io.IOException
      */
     public void enviar(Collection<FileHeader> lista) throws IOException {
         oos.writeObject(lista);

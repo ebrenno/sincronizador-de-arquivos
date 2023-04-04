@@ -2,7 +2,6 @@ package utilitario.comunicacao;
 
 import utilitario.arquivo.GravadorDeArquivo;
 import utilitario.arquivo.Pacote;
-import utilitario.arquivo.ProgressoDeTransferencia;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
@@ -10,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.logging.Logger;
+import utilitario.gui.Mensagem;
 
 public class Download {
     private static final Logger log = Logger.getLogger(Download.class.getName());
@@ -25,12 +25,12 @@ public class Download {
     /**
      * Invoca uma sequência de downloads enquanto houver pacotes para receber e
      * ordena a gravação destes pacotes em disco.
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
      */
     public void iniciar() throws IOException, ClassNotFoundException {
         //executa o laço enquanto houver instancia de pacote para gravar
-        log.info("iniciando downloads.");
+        String mensagem = "iniciando downloads.";
+        log.info(mensagem);
+        Mensagem.updateDownload(mensagem);
         GravadorDeArquivo gravador = new GravadorDeArquivo();
         while (hasNext()) {
 
@@ -46,11 +46,14 @@ public class Download {
 
             Files.setLastModifiedTime(caminho, FileTime.fromMillis(pacote.getFh().getDataDeModificacao()));
             if(pacote.getFh().getTamanho() == posicao+bytesEscritos)gravador.fecharFileChannel();
-
-            log.info(String.format("%s: %s%% concluído.",pacote.getFh().getNome()
-                    , ProgressoDeTransferencia.porPorcentagem(pacote.getFh().getTamanho(),posicao+bytesEscritos)));
+            mensagem = String.format("%s: %s%% concluído.",pacote.getFh().getNome()
+                    , ProgressoDeTransferencia.porPorcentagem(pacote.getFh().getTamanho(),posicao+bytesEscritos));
+            log.info(mensagem);
+            Mensagem.updateDownload(mensagem);
         }
-            log.info("fim dos downloads.");
+            mensagem = "fim dos downloads.";
+            log.info(mensagem);
+            Mensagem.updateDownload(mensagem);
     }
 
     /**
@@ -59,8 +62,6 @@ public class Download {
      *
      * @return true se um pacote foi recebido ou false se nenhum pacote foi
      * recebido
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
      */
     private boolean hasNext() throws IOException, ClassNotFoundException {
         pacote = (Pacote) ois.readObject();

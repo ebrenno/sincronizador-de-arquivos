@@ -1,14 +1,15 @@
 package servidor;
 
+import utilitario.arquivo.Comparador;
 import utilitario.arquivo.Diretorio;
 import utilitario.arquivo.FileHeader;
 import utilitario.comunicacao.Download;
 import utilitario.comunicacao.Requisicao;
 import utilitario.gui.Mensagem;
-import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,13 +25,11 @@ public class ThreadServerDownload implements Runnable {
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-    private final JLabel label;
 
-    public ThreadServerDownload(String diretorio, String serverIp,int porta, JLabel label) {
+    public ThreadServerDownload(String diretorio, String serverIp,int porta) throws UnsupportedEncodingException {
         this.diretorio = diretorio;
         this.serverIp = serverIp;
         this.porta = porta;
-        this.label = label;
     }
     
     public void fecharRecursos() {
@@ -45,7 +44,7 @@ public class ThreadServerDownload implements Runnable {
     }
 
     public void main() throws ClassNotFoundException, IOException {
-        Mensagem.exibir(label,"aguardando novas conexões...");
+        Mensagem.updateDownload("aguardando novas conexões...");
         socket = servidor.accept();
 
         oos = new ObjectOutputStream(socket.getOutputStream());
@@ -88,7 +87,7 @@ public class ThreadServerDownload implements Runnable {
                     main();
                 }finally{
                     fecharRecursos();
-                    Mensagem.exibir(label,"---");
+                    Mensagem.updateDownload("---");
                 }
             }
         } catch (IOException | ClassNotFoundException ex) {

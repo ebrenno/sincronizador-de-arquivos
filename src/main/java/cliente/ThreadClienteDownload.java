@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Iterator;
@@ -23,16 +24,14 @@ public class ThreadClienteDownload implements Runnable {
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-    private final JLabel label; 
     
-    public ThreadClienteDownload(String diretorio,int porta,String serverIp, JLabel label) {
+    public ThreadClienteDownload(String diretorio,int porta,String serverIp) throws UnsupportedEncodingException {
         this.diretorio = diretorio;
         this.porta = porta;
         this.serverIp = serverIp;
-        this.label = label;
     }
 
-    public Collection<FileHeader> escolherArquivos(Collection<FileHeader> lista) throws IOException {
+    public Collection<FileHeader> escolherArquivos(Collection<FileHeader> lista) {
         
         for(Iterator<FileHeader> i = lista.iterator() ; i.hasNext();){
             FileHeader fh = i.next();
@@ -46,7 +45,7 @@ public class ThreadClienteDownload implements Runnable {
 
     public void main() throws ClassNotFoundException, IOException {
 
-            Mensagem.exibir(label,"conectando...");
+            Mensagem.updateDownload("conectando...");
             log.info("conectando ao servidor.");
             socket = new Socket(serverIp, porta);
             log.info("obtendo relação de arquivos internos.");
@@ -103,7 +102,7 @@ public class ThreadClienteDownload implements Runnable {
             e.printStackTrace();
         }finally{
             fecharRecursos();
-            Mensagem.exibir(label,"---");
+            Mensagem.updateDownload("---");
         }
         
     }

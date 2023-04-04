@@ -1,4 +1,4 @@
-package utilitario.arquivo;
+package utilitario.comunicacao;
 
 public class ProgressoDeTransferencia {
     public static String porPorcentagem(long volumeTotal,long posicaoAtual){

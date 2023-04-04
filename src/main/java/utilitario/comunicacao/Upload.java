@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.logging.Logger;
+import utilitario.gui.Mensagem;
 
 public class Upload {
 
@@ -25,10 +26,9 @@ public class Upload {
      *
      * @param lista uma lista com as relações de arquivos a serem enviados ou
      * uma lista vazia
-     * @throws java.io.IOException
      */
     public void iniciar(Collection<FileHeader> lista) throws IOException {
-
+        
         log.info(String.format("subindo %d arquivos.",lista.size()));
         for (FileHeader fh : lista) {
 
@@ -45,14 +45,16 @@ public class Upload {
      * envia um arquivo para outra aplicação
      */
     private void uploadArquivo(FileHeader fh) throws IOException {
-
+        String mensagem;
         Path caminho = Paths.get(diretorio.concat(fh.getNome()));
         log.info(String.format("preparando %s.",caminho));
         LeitorDeArquivo leitor = new LeitorDeArquivo();
 
         long posicao = 0;
         long tamanho = fh.getTamanho();
-        log.info(String.format("enviando %s",fh.getNome()));
+        mensagem = String.format("enviando %s",fh.getNome());
+        Mensagem.updateUpload(mensagem);
+        log.info(mensagem);
         ByteBuffer buffer = ByteBuffer.allocate(TamanhoDoBuffer.PADRAO);
         byte[] conteudo = new byte[buffer.capacity()];
 
@@ -67,11 +69,14 @@ public class Upload {
             oos.reset();
             posicao = posicao+bytesLidos;
             buffer.clear();
-
+            
+            mensagem = String.format("%s: %s%% concluído.", fh.getNome(),ProgressoDeTransferencia.porPorcentagem(tamanho, posicao));
+            Mensagem.updateUpload(mensagem);
             log.info(String.format("Posição: %d/%d, Progresso: %s%%", posicao, tamanho, ProgressoDeTransferencia.porPorcentagem(tamanho, posicao)));
         }while(posicao < tamanho);
-
-        log.info(String.format("%s enviado.",fh.getNome()));
+        mensagem = String.format("%s enviado.",fh.getNome());
+        log.info(mensagem);
+        Mensagem.updateUpload(mensagem);
     }
 
 }

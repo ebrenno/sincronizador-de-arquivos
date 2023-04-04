@@ -1,14 +1,15 @@
 package servidor;
 
+import utilitario.arquivo.Comparador;
 import utilitario.arquivo.Diretorio;
 import utilitario.arquivo.FileHeader;
 import utilitario.comunicacao.Requisicao;
 import utilitario.comunicacao.Upload;
 import utilitario.gui.Mensagem;
-import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,11 +18,10 @@ import java.util.logging.Logger;
 
 public class ThreadServerUpload implements Runnable {
     private static final Logger log = Logger.getLogger(ThreadServerUpload.class.getName());
-    public ThreadServerUpload(String diretorio, String serverIp,int porta, JLabel label) {
+    public ThreadServerUpload(String diretorio, String serverIp,int porta) throws UnsupportedEncodingException {
         this.diretorio = diretorio;
         this.serverIp = serverIp;
         this.porta = porta;
-        this.label = label;
     }
     private final String diretorio;
     private final String serverIp;
@@ -30,7 +30,6 @@ public class ThreadServerUpload implements Runnable {
     private Socket socket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private final JLabel label;
     
     public void fecharRecursos(){
  
@@ -45,7 +44,7 @@ public class ThreadServerUpload implements Runnable {
 
     public void main() throws IOException, ClassNotFoundException {
 
-        Mensagem.exibir(label,"aguardando novas conexões...");
+        Mensagem.updateUpload("aguardando novas conexões...");
         log.info("aguardando novas conexões.");
         socket = servidor.accept();
         log.info("iniciando atendimento.");
@@ -93,7 +92,7 @@ public class ThreadServerUpload implements Runnable {
                     main();
                 } finally {
                     fecharRecursos();
-                    Mensagem.exibir(label,"---");
+                    Mensagem.updateUpload("---");
                 }
             }
         } catch (IOException | ClassNotFoundException ex) {

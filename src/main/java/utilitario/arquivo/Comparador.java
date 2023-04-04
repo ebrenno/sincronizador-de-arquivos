@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servidor;
+package utilitario.arquivo;
 
 import java.util.Collection;
 import java.util.Iterator;
-import utilitario.arquivo.FileHeader;
 
 /**
  *

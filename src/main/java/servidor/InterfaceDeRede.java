@@ -15,7 +15,6 @@ import java.util.Enumeration;
 public class InterfaceDeRede {
     /**
      *busca por endereços ip local das interfaces de rede do host
-     * @throws java.net.SocketException 
      */
     public static Collection<String> buscarEnderecosLocais() throws SocketException {
         Collection<String> enderecosIp = new ArrayList<>();
