@@ -2,6 +2,7 @@ package utilitario.comunicacao;
 
 import utilitario.arquivo.GravadorDeArquivo;
 import utilitario.arquivo.Pacote;
+import utilitario.arquivo.ProgressoDeTransferencia;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
@@ -30,11 +31,11 @@ public class Download {
     public void iniciar() throws IOException, ClassNotFoundException {
         //executa o laço enquanto houver instancia de pacote para gravar
         log.info("iniciando downloads.");
-
+        GravadorDeArquivo gravador = new GravadorDeArquivo();
         while (hasNext()) {
 
-            GravadorDeArquivo gravador = new GravadorDeArquivo();
             Path caminho = Path.of(diretorio.concat(pacote.getFh().getNome()));
+            log.info(String.format("preparando: %s",caminho));
             ByteBuffer conteudo = ByteBuffer.wrap(pacote.getConteudo(),
                     pacote.getConteudo().length - pacote.getTamanhoDoConteudo()
                     ,pacote.getTamanhoDoConteudo());
@@ -44,7 +45,10 @@ public class Download {
             log.info(String.format("bytes escritos: %d/%d, na posição: %d",bytesEscritos,conteudo.capacity(),posicao));
 
             Files.setLastModifiedTime(caminho, FileTime.fromMillis(pacote.getFh().getDataDeModificacao()));
+            if(pacote.getFh().getTamanho() == posicao+bytesEscritos)gravador.fecharFileChannel();
 
+            log.info(String.format("%s: %s%% concluído.",pacote.getFh().getNome()
+                    , ProgressoDeTransferencia.porPorcentagem(pacote.getFh().getTamanho(),posicao+bytesEscritos)));
         }
             log.info("fim dos downloads.");
     }
