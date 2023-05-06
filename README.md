@@ -1,9 +1,8 @@
 # sincronizador-de-arquivos
-Um projeto acadêmico em java que utiliza sockets como objeto de estudo para comunicação entre aplicações.
+Um projeto acadêmico em java que utiliza sockets como objeto de estudo da comunicação entre aplicações.
 ## Descrição do projeto
 O projeto compõe duas aplicações que colaboram entre si para a transferência de arquivos pela rede utilizando sockets. O conceito é análogo a qualquer sincronizador conhecido, visando fazer as aplicações transferirem os arquivos que foram alterados.
-## Avisos importantes
-  - Os arquivos são carregados na memória ram antes de serem transferidos e não há limite máximo para o tamanho dos arquivos. Portanto, atente-se para a disponibilidade de memória.
+## Importante:
   - O ambiente de testes foi uma distribuição Linux com sistema de arquivos ext4. O comportamento dos apps podem não ser o esperado em diferentes ambientes.
 ## Construindo o projeto
 O projeto contém dois pacotes independentes com suas respectivas classes executáveis `Servidor.java` e `Cliente.java`. Para construir os produtos individualmente, basta separar esses pacotes em duas cópias do projeto.
@@ -21,6 +20,7 @@ O projeto contém dois pacotes independentes com suas respectivas classes execut
     - o botão "ligar" se torna "desligar", onde o app deixará de fazer requisições ao servidor e podendo ter suas configurações refeitas.
 5. eventualmente uma caixa de confirmação aparecerá para aceitar ou recusar a transferência de cada arquivo.
 ## Comportamentos de destaque
+  - Transferência de arquivos de qualquer tamanho, com baixo consumo de memória ram.
   - busca por conexões de rede local nas interfaces de rede identificadas.
   - apenas novos arquivos e os que foram alterados por último são candidatos à transferência.
   - os apps não farão a leitura de arquivos que por ventura estiverem sendo movidos para o diretório naquele instante, evitando inconsistência nos dados.
